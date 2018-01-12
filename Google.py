@@ -1,15 +1,8 @@
 ﻿#!/usr/bin/env python
 
-#OPEN LOG FILE FOR DEBUGGING
-f = open(log.txt, w)
-
-#WRITE Log1
-file.write("0.0")
-
 #IMPORTS
 
 import mechanize
-import MySQLdb
 import sys
 from bs4 import BeautifulSoup
 
@@ -20,7 +13,7 @@ ptc = ["|", "<", ">", "!", "{", "[", "]", "}", "/", ",", ";", ".", ":", "-", "_"
     #EXTRAORDINARY CHARACTERS
 uncommon = ["é", "ü", "ö", "ä", "ú", "ù", "á", "à"]
     #REPLACEMENT
-replace = ["e", "ue", "oe", "ae"]
+replace = ["e", "ue", "oe", "ae", "u", "u", "a", "a"]
     #IRRELEVANT CHARACTERS
 misc = ["\\xd", "\\xa", "\\x", "\\u"]
     #HTML TAGS
@@ -34,7 +27,7 @@ ar = sys.argv
     #FREQUENCY OF WORDS
 freq = []
     #MOST COMMON WORDS
-data = [0,0,0,0,0]
+data = [0,0,0,0,0,0,0,0,0,0]
 
 
 #BROWSER SETUP
@@ -45,17 +38,11 @@ br.set_handle_refresh(False)
 br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071615 Fedora/3.0.1-1.fc9 Firefox/3.0.1')]
 
 
-#DB SETUP
-
-db = MySQLdb.connect("rdbms.strato.de", "U3140417", "tP2GHz7WTSCE", "DB3140417")
-cur = db.cursor()
-
 #DEF's
 
 #LOOKING UP THE DESIGNATED IMAGE
 def ReverseImageLookup():
 
-    filename = ar[4]
     
     #GET SEARCH WEBSITE
     #OPEN IMAGES.GOOGLE.COM
@@ -63,7 +50,7 @@ def ReverseImageLookup():
     #SELECT FORM
     br.select_form( 'f' )                                                         
     #IMAGE URL
-    br.form[ 'q' ] = 'https://lost-and-found-app.de/pics/'+filename               
+    br.form[ 'q' ] = 'http://casiocdn.com/casio-v2/resource/images/products/watches/large/MRGG1000D-1A_large.png' #URL TO PICTURE               
     #SUBMIT FORM
     br.submit()                                                                   
     #READ RESPONSE
@@ -168,37 +155,24 @@ def ReverseImageLookup():
                 c = y
         print c
         freq[c] = 0
-'''
-    
+
+    #FOR DEVELOPMENT ONLY 
     print split
     print freq
     print data
 
-'''
-return data
-    #END OF DEF
-
-
-
-#WRITING THE GATHERD DATA INTO THE DATABASEs
-
-def MySQL_Write(name, location, description, filename, keywords):
-    
-    cur.execute("INSERT INTO found(Name, Location, Description, Picture, ID, Keywords) Values('"+name+"', '"+location+"', '"+description+"', '"+filename+"', '', '"+keywords+"')")
 
     #END OF DEF
+
+
+
     
 #PROGRAMM
-f.write("1.0")    
-Keywords = ReverseImageLookup()
-f.write("1.5")
-MySQL_Write(ar[1], ar[2], ar[3], ar[4], Keywords)
-f.write("2.0")
+ReverseImageLookup()
+
 
 
 
 
 
 #END
-f.close()
-db.close()
