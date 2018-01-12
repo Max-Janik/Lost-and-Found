@@ -6,3 +6,5 @@ Google.py ist das Script für die Reverse-Image-Lookup-Funktion
 Server.py ist das serverseitige Socket-Script
 
 main.py ist der unkompilierte Quellcode für die Android App
+
+LostandFound-1.0-release.apk ist die kompillierte Android App
