@@ -13,8 +13,11 @@ class APP:
         
         pygame.init()
         android = True
+        #DEFINE SCREEN SIZE FOR DESKTOP TESTING
         screen = pygame.display.set_mode((720/2, 1280/2))
+        #GET SCREEN HEIGHT AND WIDTH
         screen_w, screen_h = screen.get_size()
+        #DEFINE RELATIVE SIZES
         button_h = screen_h*0.1
         button_w = screen_w/3
         header_h = 1.5 * button_h
@@ -59,9 +62,8 @@ class APP:
         Header = screen.blit(Header_Icon, [0,0])
         pygame.display.flip()
 
-
+        #ERASE SCREEN CONTENT BETWEEN HEADER AND BUTTONS
         def erase():
-            print "Erasing..."
             screen.fill((255, 255, 255), (0,int(header_h),screen_w,int(0.75*screen_h)))
             pygame.display.flip()
 
@@ -87,28 +89,34 @@ class APP:
 
                 #BUTTON 1 | ESTABLISHING CONNECTION
                 if button1.collidepoint(event.pos):
-                    
+
+                    #BUTTON PRESS ANIMATION
                     button1 = screen.blit(HNB_Icon, [0, button_h*9])
                     pygame.display.flip()
-                    #"Lost-and-Found-app.de/var/www/Server.py"
                     try:
+                        #eSTABLISHING SOCKET SERVER
                         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                         
                         erase()
+                        #FOR DEBUGGING ONLY
                         textsurface = font.render("Socket Works!", False, (0, 0, 0))
                         screen.blit(textsurface,(0,header_h))
                         pygame.display.flip()
 
+                        #FOR LOCAL AND GLOBAL TESTING
                         global_ip = "Lost-and-Found-app.de"
                         local_ip = "192.168.2.105"
+                        #CONNECTING TO SOCKET SERVER
                         s.connect((global_ip,3389))
                         print s.recv(1024)
                         print s.recv(1024)
                         print s.recv(1024)
+                        #FOR DEBUGGING ONLY
                         textsurface = font.render("Connected!", False, (0, 0, 0))
                         screen.blit(textsurface,(0,1.25*header_h))
                         pygame.display.flip()
-
+                        
+                        #RECIVE FILE FROM SERVER
                         with open('empfangen.jpg','wb') as f:
                             while True:
                                 recv = s.recv(1024)
@@ -120,15 +128,18 @@ class APP:
                                 if len(recv) < 1024:
                                     break
 
+                        #FOR DEBUGGING ONLY
                         textsurface = font.render("Recieved Data!", False, (0, 0, 0))
                         screen.blit(textsurface,(0,1.5*header_h))
                         pygame.display.flip()
-                        
+
+                        #CLOSE CONNECTIONS
                         f.close()
                         s.send("1")
                         s.close()
                         
                         erase()
+                        #SHOW RECIEVED IMAGE ON SCREEN
                         prnt = pygame.image.load("empfangen.jpg")
                         prnt = pygame.transform.scale(prnt,(screen_w,button_h*7.5))
                         screen.blit(prnt,(0,header_h))
@@ -180,6 +191,7 @@ class APP:
                         print "sleeping now"
                     elif event.type == pygame.APP_DIDENTERFOREGROUND:
                         
+                        #SETTING UP THE SCREEN AFTER REENTERING THE APP
                         screen = pygame.display.set_mode((1280, 720))
                         screen.fill((255, 255, 255))    
                         button1 = screen.blit(BNB_Icon, [0, button_h*9])
@@ -188,7 +200,7 @@ class APP:
                         Header = screen.blit(Header_Icon, [0,0])
                         pygame.display.flip()
             except:
-                android == False
+                android == False #PREVENTING CRASH ON DESKTOP
 
         #QUITS THE APP WHEN BREAKING OUT THE WHILE LOOP
         pygame.quit()
